@@ -39,11 +39,7 @@
     "testRegex": "^.+\\.spec\\.ts$"
   },
   "dependencies": {
-    "@types/lodash.get": "4.4.4",
     "@types/lodash.has": "4.5.4",
-    "@types/lodash.reduce": "4.6.4",
-    "lodash.get": "4.4.2",
-    "lodash.has": "4.5.2",
-    "lodash.reduce": "4.6.0"
+    "lodash.has": "4.5.2"
   }
 }
