@@ -1,8 +1,12 @@
 # ts-object-transformer [![Build Status](https://travis-ci.org/fcamblor/ts-object-transformer.svg?branch=master)](https://travis-ci.org/fcamblor/ts-object-transformer)
 
-> Typescript Type-safe object transformation
+> Typescript Type-safe object transformation, with no magic (no decorators, no typescript compilation plugins)
 
 Useful for JSON mappings with complex JS/TS types (Date, Regex etc.)
+
+## Requirements
+
+Typescript >= 2.8
 
 ## Install
 
