@@ -2,8 +2,8 @@
   "name": "ts-object-transformer",
   "version": "0.0.1",
   "description": "",
-  "main": "./lib/index.js",
-  "typings": "./lib/index.d.ts",
+  "main": "./lib/ts-object-transformer.js",
+  "typings": "./lib/ts-object-transformer.d.ts",
   "scripts": {
     "prepare": "npm run build",
     "build": "tsc",
