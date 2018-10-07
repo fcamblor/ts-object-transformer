@@ -39,6 +39,8 @@ transformObject(
 ## Usage
 
 ```ts
+import {transformObject} from 'ts-object-transformer';
+
 let transformedResult = transformObject(
     { date: "2018-10-04T00:00:00+0200", date2: 1538604000000, aString: "Hello%20World", idempotentValue: "foo" },
     { date: Date.parse, date2: (ts: number) => new Date(ts), aString: unescape },
