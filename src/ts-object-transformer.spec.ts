@@ -20,7 +20,7 @@ describe("ts-object-transformer", () => {
             // - Values should be function taking SRC[key] and returning a new type NEW_TYPE[key] we want to capture in
             // order to reference it in transformObject()'s result type
             // Let's call this type COMPUTED_MAP
-            { computed: (_, obj) => `${obj?`${obj.aString}__${obj.idempotentValue}`:''}` }
+            { computed: (obj) => `${obj?`${obj.aString}__${obj.idempotentValue}`:''}` }
         );
         // Result type (NEW_TYPE) should be a map with its keys being the union of SRC keys and COMPUTED_MAP keys with following rules :
         // - If key exists only in SRC, then NEW_TYPE[key] = SRC[key]
@@ -80,7 +80,7 @@ describe("ts-object-transformer", () => {
         let transformedResult = transformObject(
             { date: "2018-10-04T00:00:00+0200", date2: 1538604000000, aString: "Hello%20World", idempotentValue: "foo" },
             fieldMapping,
-            { computed: (_, obj) => `${obj?`${obj.aString}__${obj.idempotentValue}`:''}` }
+            { computed: (obj) => `${obj?`${obj.aString}__${obj.idempotentValue}`:''}` }
         );
 
         expect(keys(transformedResult)).toEqual(['date', 'date2', 'aString', 'idempotentValue', 'computed']);
@@ -135,7 +135,7 @@ describe("ts-object-transformer", () => {
         let transformedResult = transformObject(
             { date: "2018-10-04T00:00:00+0200", date2: 1538604000000, aString: "Hello%20World", idempotentValue: "foo" },
             { date: Date.parse, date2: (ts: number) => new Date(ts), aString: unescape },
-            { computed: (_, obj) => `${obj?`${obj.aString}__${obj.idempotentValue}`:''}` }
+            { computed: (obj) => `${obj?`${obj.aString}__${obj.idempotentValue}`:''}` }
         );
 
         // Doesn't compile : Argument of type "blah" doesn't exist on type
@@ -164,7 +164,7 @@ describe("ts-object-transformer", () => {
         let transformedResult3 = transformObject(
             { date: "2018-10-04T00:00:00+0200", date2: 1538604000000, aString: "Hello%20World", idempotentValue: "foo" },
             undefined,
-            { computed: (_, obj) => `${obj?`${obj.aString}__${obj.idempotentValue}`:''}` }
+            { computed: (obj) => `${obj?`${obj.aString}__${obj.idempotentValue}`:''}` }
         );
         console.log(transformedResult3.date); // 2018-10-04T00:00:00+0200
         console.log(transformedResult3.date2); // 1538604000000

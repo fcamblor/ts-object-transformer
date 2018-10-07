@@ -42,7 +42,7 @@ transformObject(
 let transformedResult = transformObject(
     { date: "2018-10-04T00:00:00+0200", date2: 1538604000000, aString: "Hello%20World", idempotentValue: "foo" },
     { date: Date.parse, date2: (ts: number) => new Date(ts), aString: unescape },
-    { computed: (_, obj) => `${obj?`${obj.aString}__${obj.idempotentValue}`:''}` }
+    { computed: (obj) => `${obj?`${obj.aString}__${obj.idempotentValue}`:''}` }
 );
 
 // Doesn't compile : Argument of type "blah" doesn't exist on type
@@ -75,7 +75,7 @@ console.log(transformedResult2.idempotentValue); // foo
 let transformedResult3 = transformObject(
     { date: "2018-10-04T00:00:00+0200", date2: 1538604000000, aString: "Hello%20World", idempotentValue: "foo" },
     undefined,
-    { computed: (_, obj) => `${obj?`${obj.aString}__${obj.idempotentValue}`:''}` }
+    { computed: (obj) => `${obj?`${obj.aString}__${obj.idempotentValue}`:''}` }
 );
 console.log(transformedResult3.date); // 2018-10-04T00:00:00+0200
 console.log(transformedResult3.date2); // 1538604000000

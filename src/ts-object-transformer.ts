@@ -9,7 +9,7 @@ type FieldMap<SRC> = {
 type ComputedMap<SRC> = {
     [ATTR in keyof SRC]?: never
 } & {
-    [ATTR: string]: (value: undefined, obj: SRC) => any
+    [ATTR: string]: (obj: SRC) => any
 };
 type MappedReturnType<SRC, FM extends FieldMap<SRC>|undefined, CM extends ComputedMap<SRC>|undefined> =
     (CM extends ComputedMap<SRC> ? { [ATTR in keyof CM]: ReturnType<CM[ATTR]> } : unknown )
@@ -34,8 +34,8 @@ export function transformObject<
 
     if(computedMap) {
         each(<(keyof CM)[]> keys(computedMap), (key) => {
-            let transformer = <(value: undefined, obj: SRC) => any>computedMap[<string>key];
-            result[key] = transformer(undefined, src);
+            let transformer = <(obj: SRC) => any>computedMap[<string>key];
+            result[key] = transformer(src);
             return result;
         });
     }
