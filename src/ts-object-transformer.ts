@@ -22,12 +22,18 @@ export function transformObject<
     let result: any = {};
     for(let key in src) {
         let value: any = src[key];
+        let transformedValue: any;
         if(fieldMap && (key in fieldMap)) {
-            let transformer = <(value: any, obj?: SRC) => any>fieldMap[key];
-            result[key] = transformer(value, src);
+            let transformer = fieldMap[key];
+            if(transformer) {
+                transformedValue = transformer(value, src);
+            } else {
+                transformedValue = value;
+            }
         } else {
-            result[key] = value;
+            transformedValue = value;
         }
+        result[key] = transformedValue;
     }
 
     if(computedMap) {

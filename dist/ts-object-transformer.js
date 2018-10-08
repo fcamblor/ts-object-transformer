@@ -4,13 +4,20 @@ function transformObject(src, fieldMap, computedMap) {
     let result = {};
     for (let key in src) {
         let value = src[key];
+        let transformedValue;
         if (fieldMap && (key in fieldMap)) {
             let transformer = fieldMap[key];
-            result[key] = transformer(value, src);
+            if (transformer) {
+                transformedValue = transformer(value, src);
+            }
+            else {
+                transformedValue = value;
+            }
         }
         else {
-            result[key] = value;
+            transformedValue = value;
         }
+        result[key] = transformedValue;
     }
     if (computedMap) {
         for (let key in computedMap) {
