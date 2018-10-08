@@ -144,31 +144,38 @@ describe("ts-object-transformer", () => {
         // Proves that date2 has been converted to Date
         // let num: number = transformedResult.date2;
 
-        console.log(transformedResult.date); // 1538604000000
-        console.log(transformedResult.date2); // 2018-10-03T22:00:00.000Z (new Date(1538604000000))
-        console.log(transformedResult.aString); // Hello world
-        console.log(transformedResult.idempotentValue); // foo
-        console.log(transformedResult.computed); // Hello%20World__foo
+        log(transformedResult.date); // 1538604000000
+        log(transformedResult.date2); // 2018-10-03T22:00:00.000Z (new Date(1538604000000))
+        log(transformedResult.aString); // Hello world
+        log(transformedResult.idempotentValue); // foo
+        log(transformedResult.computed); // Hello%20World__foo
 
         let transformedResult2 = transformObject(
             { date: "2018-10-04T00:00:00+0200", date2: 1538604000000, aString: "Hello%20World", idempotentValue: "foo" },
             { date: Date.parse, date2: (ts: number) => new Date(ts), aString: unescape }
         );
 
-        console.log(transformedResult2.date); // 1538604000000
-        console.log(transformedResult2.date2); // 2018-10-03T22:00:00.000Z (new Date(1538604000000))
-        console.log(transformedResult2.aString); // Hello world
-        console.log(transformedResult2.idempotentValue); // foo
+        log(transformedResult2.date); // 1538604000000
+        log(transformedResult2.date2); // 2018-10-03T22:00:00.000Z (new Date(1538604000000))
+        log(transformedResult2.aString); // Hello world
+        log(transformedResult2.idempotentValue); // foo
 
         let transformedResult3 = transformObject(
             { date: "2018-10-04T00:00:00+0200", date2: 1538604000000, aString: "Hello%20World", idempotentValue: "foo" },
             undefined,
             { computed: (obj) => `${obj?`${obj.aString}__${obj.idempotentValue}`:''}` }
         );
-        console.log(transformedResult3.date); // 2018-10-04T00:00:00+0200
-        console.log(transformedResult3.date2); // 1538604000000
-        console.log(transformedResult3.aString); // Hello%20world
-        console.log(transformedResult3.idempotentValue); // foo
-        console.log(transformedResult3.computed); // Hello%20World__foo
+        log(transformedResult3.date); // 2018-10-04T00:00:00+0200
+        log(transformedResult3.date2); // 1538604000000
+        log(transformedResult3.aString); // Hello%20world
+        log(transformedResult3.idempotentValue); // foo
+        log(transformedResult3.computed); // Hello%20World__foo
     });
+
+    function log(message?: any, ...optionalParams: any[]): void {
+        let logEnabled = false; // switch this in dev to enable console.log()
+        if(logEnabled) {
+            console.log(message, optionalParams);
+        }
+    }
 });
