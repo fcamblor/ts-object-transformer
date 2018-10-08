@@ -2,8 +2,8 @@
   "name": "ts-object-transformer",
   "version": "0.0.2",
   "description": "",
-  "main": "./lib/ts-object-transformer.js",
-  "typings": "./lib/ts-object-transformer.d.ts",
+  "main": "./dist/ts-object-transformer.js",
+  "typings": "./dist/ts-object-transformer.d.ts",
   "scripts": {
     "prepare": "npm run build",
     "build": "tsc",
@@ -26,7 +26,7 @@
     "typescript": "3.1.1"
   },
   "files": [
-    "lib"
+    "dist"
   ],
   "jest": {
     "transform": {
