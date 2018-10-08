@@ -1,4 +1,8 @@
 # Specificities
+# Removing spec files from dist folder
+# Another option would be exclude spec files in tsconfig, but for strange reason, 
+# spec files doesn't compile well after that
+dist/**/*.spec.*
 
 # Intellij IDEA
 *.iml
