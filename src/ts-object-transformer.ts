@@ -22,7 +22,7 @@ export function transformObject<
     let result: any = {};
     for(let key in src) {
         let value: any = src[key];
-        if(fieldMap && srcKeyExistsIn<SRC, FM>(fieldMap, key)) {
+        if(fieldMap && (key in fieldMap)) {
             let transformer = <(value: any, obj?: SRC) => any>fieldMap[key];
             result[key] = transformer(value, src);
         } else {
@@ -39,8 +39,4 @@ export function transformObject<
     }
 
     return result;
-}
-
-function srcKeyExistsIn<SRC extends object, FM extends FieldMap<SRC>|undefined>(fieldMap: FM, key: (keyof SRC)): key is keyof SRC {
-    return !!(<any>fieldMap)[key];
 }

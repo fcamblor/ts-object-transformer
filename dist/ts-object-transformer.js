@@ -4,7 +4,7 @@ function transformObject(src, fieldMap, computedMap) {
     let result = {};
     for (let key in src) {
         let value = src[key];
-        if (fieldMap && srcKeyExistsIn(fieldMap, key)) {
+        if (fieldMap && (key in fieldMap)) {
             let transformer = fieldMap[key];
             result[key] = transformer(value, src);
         }
@@ -22,6 +22,3 @@ function transformObject(src, fieldMap, computedMap) {
     return result;
 }
 exports.transformObject = transformObject;
-function srcKeyExistsIn(fieldMap, key) {
-    return !!fieldMap[key];
-}
