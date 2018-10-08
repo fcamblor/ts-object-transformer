@@ -130,6 +130,28 @@ describe("ts-object-transformer", () => {
         // let v5: string = transformedResult.computed; // doesn't compile, property 'computed' doesn't exist on type
     });
 
+    interface NestedNode {
+        str: string;
+        num: number;
+    }
+
+    it("nested properties", () => {
+        let transformedResult = transformObject(
+            { nestedIdemPotent: { str: "foo", num: 123}, nestedChanged: { str: "foo", num: 123 } },
+            { nestedChanged: (node: NestedNode) => transformObject(node, { str: (s: string) => s.length })}
+        );
+
+        log(transformedResult.nestedIdemPotent.str); // foo
+        log(transformedResult.nestedIdemPotent.num); // 123
+        // Doesn't compile, blah not found in transformedResult.nestedIdemPotent
+        // log(transformedResult.nestedIdemPotent.blah);
+
+        log(transformedResult.nestedChanged.str); // 3
+        log(transformedResult.nestedChanged.num); // 123
+        // Doesn't compile, blah not found in transformedResult.nestedChanged
+        // log(transformedResult.nestedChanged.blah);
+    });
+
     it('Readme examples', () => {
         let transformedResult = transformObject(
             { date: "2018-10-04T00:00:00+0200", date2: 1538604000000, aString: "Hello%20World", idempotentValue: "foo" },
