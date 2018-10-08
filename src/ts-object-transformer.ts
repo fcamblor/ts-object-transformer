@@ -1,5 +1,3 @@
-import {has} from "lodash";
-
 
 // Thanks to Titian Cernicova-Dragomir https://stackoverflow.com/a/52641402/476345
 // and Matt McCutchen https://stackoverflow.com/a/52683426/476345
@@ -44,5 +42,5 @@ export function transformObject<
 }
 
 function srcKeyExistsIn<SRC extends object, FM extends FieldMap<SRC>|undefined>(fieldMap: FM, key: (keyof SRC)): key is keyof SRC {
-    return has(fieldMap, key);
+    return !!(<any>fieldMap)[key];
 }

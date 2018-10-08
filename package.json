@@ -38,8 +38,5 @@
     ],
     "testRegex": "^.+\\.spec\\.ts$"
   },
-  "dependencies": {
-    "@types/lodash.has": "4.5.4",
-    "lodash.has": "4.5.2"
-  }
+  "dependencies": {}
 }
