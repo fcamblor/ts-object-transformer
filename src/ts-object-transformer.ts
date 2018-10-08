@@ -24,7 +24,7 @@ export function transformObject<
     let result: any = {};
     for(let key in src) {
         let value: any = src[key];
-        if(fieldMap && keyOfSrc<SRC, FM, CM>(fieldMap, key)) {
+        if(fieldMap && srcKeyExistsIn<SRC, FM>(fieldMap, key)) {
             let transformer = <(value: any, obj?: SRC) => any>fieldMap[key];
             result[key] = transformer(value, src);
         } else {
@@ -43,10 +43,6 @@ export function transformObject<
     return result;
 }
 
-function keyOfSrc<SRC extends object, FM extends FieldMap<SRC>|undefined, CM extends ComputedMap<SRC>|undefined>(fieldMap: FM, key: (keyof SRC | keyof CM)): key is keyof SRC {
+function srcKeyExistsIn<SRC extends object, FM extends FieldMap<SRC>|undefined>(fieldMap: FM, key: (keyof SRC)): key is keyof SRC {
     return has(fieldMap, key);
-}
-
-function keyOfComputedMap<SRC extends object, FM extends FieldMap<SRC>, CM extends ComputedMap<SRC>>(computedMap: CM, key: (keyof SRC | keyof CM)): key is keyof CM {
-    return has(computedMap, key);
 }
