@@ -1,4 +1,4 @@
-import {has, each, keys} from "lodash";
+import {has} from "lodash";
 
 
 // Thanks to Titian Cernicova-Dragomir https://stackoverflow.com/a/52641402/476345
@@ -22,7 +22,7 @@ export function transformObject<
     SRC extends object, FM extends FieldMap<SRC>|undefined, CM extends ComputedMap<SRC>|undefined
 >(src: SRC, fieldMap?: FM, computedMap?: CM): MappedReturnType<SRC, FM, CM> {
     let result: any = {};
-    each(<(keyof SRC)[]> keys(src), (key) => {
+    for(let key in src) {
         let value: any = src[key];
         if(fieldMap && keyOfSrc<SRC, FM, CM>(fieldMap, key)) {
             let transformer = <(value: any, obj?: SRC) => any>fieldMap[key];
@@ -30,14 +30,14 @@ export function transformObject<
         } else {
             result[key] = value;
         }
-    });
+    }
 
     if(computedMap) {
-        each(<(keyof CM)[]> keys(computedMap), (key) => {
+        for(let key in computedMap) {
             let transformer = <(obj: SRC) => any>computedMap[<string>key];
             result[key] = transformer(src);
             return result;
-        });
+        }
     }
 
     return result;

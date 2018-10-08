@@ -1,5 +1,4 @@
 import {transformObject} from './ts-object-transformer';
-import {keys} from 'lodash';
 
 describe("ts-object-transformer", () => {
     it("object transformation", () => {
@@ -30,7 +29,7 @@ describe("ts-object-transformer", () => {
         //   mappedResult = { date: Date.parse("2018-10-04T00:00:00+0200"), date2: new Date(1538604000000), aString: unescape("Hello%20World"), idempotentValue: "foo", computed: "Hello%20World__foo" }
         // ..  meaning that expected type would be { date: number, date2: Date, aString: string, idempotentValue: string, computed: string }
 
-        expect(keys(transformedResult)).toEqual(['date', 'date2', 'aString', 'idempotentValue', 'computed']);
+        expect(Object.keys(transformedResult)).toEqual(['date', 'date2', 'aString', 'idempotentValue', 'computed']);
 
         let v1: number = transformedResult.date; // number, expected
         expect(typeof v1).toEqual('number');
@@ -58,7 +57,7 @@ describe("ts-object-transformer", () => {
             { date: Date.parse, date2: (ts: number) => new Date(ts), aString: unescape }
         );
 
-        expect(keys(transformedResult)).toEqual(['date', 'date2', 'aString', 'idempotentValue']);
+        expect(Object.keys(transformedResult)).toEqual(['date', 'date2', 'aString', 'idempotentValue']);
 
         let v1: number = transformedResult.date; // number, expected
         expect(typeof v1).toEqual('number');
@@ -83,7 +82,7 @@ describe("ts-object-transformer", () => {
             { computed: (obj) => `${obj?`${obj.aString}__${obj.idempotentValue}`:''}` }
         );
 
-        expect(keys(transformedResult)).toEqual(['date', 'date2', 'aString', 'idempotentValue', 'computed']);
+        expect(Object.keys(transformedResult)).toEqual(['date', 'date2', 'aString', 'idempotentValue', 'computed']);
 
         let v1: string = transformedResult.date; // string expected
         expect(typeof v1).toEqual('string');
@@ -114,7 +113,7 @@ describe("ts-object-transformer", () => {
             { date: "2018-10-04T00:00:00+0200", date2: 1538604000000, aString: "Hello%20World", idempotentValue: "foo" }
         );
 
-        expect(keys(transformedResult)).toEqual(['date', 'date2', 'aString', 'idempotentValue']);
+        expect(Object.keys(transformedResult)).toEqual(['date', 'date2', 'aString', 'idempotentValue']);
 
         let v1: string = transformedResult.date; // string expected
         expect(typeof v1).toEqual('string');
