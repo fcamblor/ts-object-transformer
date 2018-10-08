@@ -16,7 +16,6 @@ function transformObject(src, fieldMap, computedMap) {
         for (let key in computedMap) {
             let transformer = computedMap[key];
             result[key] = transformer(src);
-            return result;
         }
     }
     return result;

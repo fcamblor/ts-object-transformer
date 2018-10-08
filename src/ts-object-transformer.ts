@@ -34,7 +34,6 @@ export function transformObject<
         for(let key in computedMap) {
             let transformer = <(obj: SRC) => any>computedMap[<string>key];
             result[key] = transformer(src);
-            return result;
         }
     }
 

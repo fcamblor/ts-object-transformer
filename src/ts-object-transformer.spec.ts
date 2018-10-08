@@ -19,7 +19,7 @@ describe("ts-object-transformer", () => {
             // - Values should be function taking SRC[key] and returning a new type NEW_TYPE[key] we want to capture in
             // order to reference it in transformObject()'s result type
             // Let's call this type COMPUTED_MAP
-            { computed: (obj) => `${obj?`${obj.aString}__${obj.idempotentValue}`:''}` }
+            { computed: (obj) => `${obj?`${obj.aString}__${obj.idempotentValue}`:''}`, strlen: (obj) => obj.aString.length }
         );
         // Result type (NEW_TYPE) should be a map with its keys being the union of SRC keys and COMPUTED_MAP keys with following rules :
         // - If key exists only in SRC, then NEW_TYPE[key] = SRC[key]
@@ -29,7 +29,7 @@ describe("ts-object-transformer", () => {
         //   mappedResult = { date: Date.parse("2018-10-04T00:00:00+0200"), date2: new Date(1538604000000), aString: unescape("Hello%20World"), idempotentValue: "foo", computed: "Hello%20World__foo" }
         // ..  meaning that expected type would be { date: number, date2: Date, aString: string, idempotentValue: string, computed: string }
 
-        expect(Object.keys(transformedResult)).toEqual(['date', 'date2', 'aString', 'idempotentValue', 'computed']);
+        expect(Object.keys(transformedResult)).toEqual(['date', 'date2', 'aString', 'idempotentValue', 'computed', 'strlen']);
 
         let v1: number = transformedResult.date; // number, expected
         expect(typeof v1).toEqual('number');
@@ -47,6 +47,9 @@ describe("ts-object-transformer", () => {
         let v5: string = transformedResult.computed; // string, expected
         expect(typeof v5).toEqual('string');
         expect(v5).toEqual('Hello%20World__foo');
+        let v6: number = transformedResult.strlen; // number, expected
+        expect(typeof v6).toEqual('number');
+        expect(v6).toEqual(13);
 
         // transformedResult.blah // doesn't compile, Property 'blah' doesn't exist on type
     });
