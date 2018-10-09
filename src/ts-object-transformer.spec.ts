@@ -19,17 +19,17 @@ describe("ts-object-transformer", () => {
             // - Values should be function taking SRC[key] and returning a new type NEW_TYPE[key] we want to capture in
             // order to reference it in transformObject()'s result type
             // Let's call this type COMPUTED_MAP
-            { computed: (obj) => `${obj?`${obj.aString}__${obj.idempotentValue}`:''}`, strlen: (obj) => obj.aString.length }
+            { year: (obj) => obj.date.substr(0, 4), strlen: (obj) => obj.aString.length }
         );
         // Result type (NEW_TYPE) should be a map with its keys being the union of SRC keys and COMPUTED_MAP keys with following rules :
         // - If key exists only in SRC, then NEW_TYPE[key] = SRC[key]
         // - If key is a computed key (belonging to COMPUTED_MAP), then NEW_TYPE[key] = ResultType<COMPUTED_MAP[key]>
         // - Otherwise (key existing in FIELD_MAP), then NEW_TYPE[key] = ResultType<FIELD_MAP[key]>
         // In this example, expecting
-        //   mappedResult = { date: Date.parse("2018-10-04T00:00:00+0200"), date2: new Date(1538604000000), aString: unescape("Hello%20World"), idempotentValue: "foo", computed: "Hello%20World__foo" }
-        // ..  meaning that expected type would be { date: number, date2: Date, aString: string, idempotentValue: string, computed: string }
+        //   mappedResult = { date: Date.parse("2018-10-04T00:00:00+0200"), date2: new Date(1538604000000), aString: unescape("Hello%20World"), idempotentValue: "foo", year: "2018", strlen: 13 }
+        // ..  meaning that expected type would be { date: number, date2: Date, aString: string, idempotentValue: string, year: string, strlen: number }
 
-        expect(Object.keys(transformedResult)).toEqual(['date', 'date2', 'aString', 'idempotentValue', 'computed', 'strlen']);
+        expect(Object.keys(transformedResult)).toEqual(['date', 'date2', 'aString', 'idempotentValue', 'year', 'strlen']);
 
         let v1: number = transformedResult.date; // number, expected
         expect(typeof v1).toEqual('number');
@@ -44,9 +44,9 @@ describe("ts-object-transformer", () => {
         let v4: string = transformedResult.idempotentValue; // string, expected
         expect(typeof v4).toEqual('string');
         expect(v4).toEqual('foo');
-        let v5: string = transformedResult.computed; // string, expected
+        let v5: string = transformedResult.year; // string, expected
         expect(typeof v5).toEqual('string');
-        expect(v5).toEqual('Hello%20World__foo');
+        expect(v5).toEqual('2018');
         let v6: number = transformedResult.strlen; // number, expected
         expect(typeof v6).toEqual('number');
         expect(v6).toEqual(13);
@@ -75,17 +75,17 @@ describe("ts-object-transformer", () => {
         let v4: string = transformedResult.idempotentValue; // string, expected
         expect(typeof v4).toEqual('string');
         expect(v4).toEqual('foo');
-        // let v5: string = transformedResult.computed; // doesn't compile, property 'computed' doesn't exist on type
+        // let v5: string = transformedResult.year; // doesn't compile, property 'year' doesn't exist on type
     });
 
     function jsonMappingsWithFieldMappings(fieldMapping: {}|undefined) {
         let transformedResult = transformObject(
             { date: "2018-10-04T00:00:00+0200", date2: 1538604000000, aString: "Hello%20World", idempotentValue: "foo" },
             fieldMapping,
-            { computed: (obj) => `${obj?`${obj.aString}__${obj.idempotentValue}`:''}` }
+            { year: (obj) => obj.date.substr(0, 4) }
         );
 
-        expect(Object.keys(transformedResult)).toEqual(['date', 'date2', 'aString', 'idempotentValue', 'computed']);
+        expect(Object.keys(transformedResult)).toEqual(['date', 'date2', 'aString', 'idempotentValue', 'year']);
 
         let v1: string = transformedResult.date; // string expected
         expect(typeof v1).toEqual('string');
@@ -99,9 +99,9 @@ describe("ts-object-transformer", () => {
         let v4: string = transformedResult.idempotentValue; // string, expected
         expect(typeof v4).toEqual('string');
         expect(v4).toEqual('foo');
-        let v5: string = transformedResult.computed; // string, expected
+        let v5: string = transformedResult.year; // string, expected
         expect(typeof v5).toEqual('string');
-        expect(v5).toEqual('Hello%20World__foo');
+        expect(v5).toEqual('2018');
     }
     it("object transformation with no field mappings", () => {
         jsonMappingsWithFieldMappings({});
@@ -130,7 +130,7 @@ describe("ts-object-transformer", () => {
         let v4: string = transformedResult.idempotentValue; // string, expected
         expect(typeof v4).toEqual('string');
         expect(v4).toEqual('foo');
-        // let v5: string = transformedResult.computed; // doesn't compile, property 'computed' doesn't exist on type
+        // let v5: string = transformedResult.year; // doesn't compile, property 'year' doesn't exist on type
     });
 
     interface NestedNode {
@@ -159,7 +159,7 @@ describe("ts-object-transformer", () => {
         let transformedResult = transformObject(
             { date: "2018-10-04T00:00:00+0200", date2: 1538604000000, aString: "Hello%20World", idempotentValue: "foo" },
             { date: Date.parse, date2: (ts: number) => new Date(ts), aString: unescape },
-            { computed: (obj) => `${obj?`${obj.aString}__${obj.idempotentValue}`:''}` }
+            { year: (obj) => obj.date.substr(0, 4) }
         );
 
         // Doesn't compile : Argument of type "blah" doesn't exist on type
@@ -173,7 +173,7 @@ describe("ts-object-transformer", () => {
         log(transformedResult.date2); // 2018-10-03T22:00:00.000Z (new Date(1538604000000))
         log(transformedResult.aString); // Hello world
         log(transformedResult.idempotentValue); // foo
-        log(transformedResult.computed); // Hello%20World__foo
+        log(transformedResult.year); // 2018
 
         let transformedResult2 = transformObject(
             { date: "2018-10-04T00:00:00+0200", date2: 1538604000000, aString: "Hello%20World", idempotentValue: "foo" },
@@ -188,13 +188,13 @@ describe("ts-object-transformer", () => {
         let transformedResult3 = transformObject(
             { date: "2018-10-04T00:00:00+0200", date2: 1538604000000, aString: "Hello%20World", idempotentValue: "foo" },
             undefined,
-            { computed: (obj) => `${obj?`${obj.aString}__${obj.idempotentValue}`:''}` }
+            { year: (obj) => obj.date.substr(0, 4) }
         );
         log(transformedResult3.date); // 2018-10-04T00:00:00+0200
         log(transformedResult3.date2); // 1538604000000
         log(transformedResult3.aString); // Hello%20world
         log(transformedResult3.idempotentValue); // foo
-        log(transformedResult3.computed); // Hello%20World__foo
+        log(transformedResult3.year); // 2018
     });
 
     function log(message?: any, ...optionalParams: any[]): void {

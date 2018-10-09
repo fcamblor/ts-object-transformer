@@ -48,7 +48,7 @@ import {transformObject} from 'ts-object-transformer';
 let transformedResult = transformObject(
     { date: "2018-10-04T00:00:00+0200", date2: 1538604000000, aString: "Hello%20World", idempotentValue: "foo" },
     { date: Date.parse, date2: (ts: number) => new Date(ts), aString: unescape },
-    { computed: (obj) => `${obj?`${obj.aString}__${obj.idempotentValue}`:''}` }
+    { year: (obj) => obj.date.substr(0, 4) }
 );
 
 // Doesn't compile : Argument of type "blah" doesn't exist on type
@@ -62,7 +62,7 @@ console.log(transformedResult.date); // 1538604000000
 console.log(transformedResult.date2); // 2018-10-03T22:00:00.000Z (new Date(1538604000000))
 console.log(transformedResult.aString); // Hello world
 console.log(transformedResult.idempotentValue); // foo
-console.log(transformedResult.computed); // Hello%20World__foo
+console.log(transformedResult.year); // 2018
 ```
 
 You can omit either fieldMappings or computedMappings (or both, but it's useless :-) :
@@ -81,13 +81,13 @@ console.log(transformedResult2.idempotentValue); // foo
 let transformedResult3 = transformObject(
     { date: "2018-10-04T00:00:00+0200", date2: 1538604000000, aString: "Hello%20World", idempotentValue: "foo" },
     undefined,
-    { computed: (obj) => `${obj?`${obj.aString}__${obj.idempotentValue}`:''}` }
+    { year: (obj) => obj.date.substr(0, 4) }
 );
 console.log(transformedResult3.date); // 2018-10-04T00:00:00+0200
 console.log(transformedResult3.date2); // 1538604000000
 console.log(transformedResult3.aString); // Hello%20world
 console.log(transformedResult3.idempotentValue); // foo
-console.log(transformedResult3.computed); // Hello%20World__foo
+console.log(transformedResult3.year); // 2018
 ```
 
 ## License
